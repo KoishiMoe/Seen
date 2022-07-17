@@ -8,9 +8,9 @@ from typing import Dict, List, Iterable, Optional
 from mcdreforged.api.decorator import new_thread
 from mcdreforged.api.utils import Serializable
 
-from mcd_seen.constants import SEENS_FILE, META, SEENS_PATH_OLD
-from mcd_seen.utils import now_time, log_seen, logger, bot_name, is_bot
-from mcd_seen.config import config
+from mcd_seen_plus.constants import SEENS_FILE, META, SEENS_PATH_OLD
+from mcd_seen_plus.utils import now_time, log_seen, logger, bot_name, is_bot
+from mcd_seen_plus.config import config
 
 bot_list = []
 
@@ -19,6 +19,7 @@ class PlayerSeen(Serializable):
     name: str
     joined: int = 0
     left: int = 0
+    total_online: int = 0
 
     def __init__(self, name: Optional[str] = None, **kwargs):
         super().__init__(**kwargs)
@@ -26,15 +27,18 @@ class PlayerSeen(Serializable):
 
     @property
     def online(self):
-        return self.joined > self.left
+        return self.joined > self.left if self.left != 0 else False  # if something went wrong, the left time could be 0
 
     def join(self):
         self.joined = now_time()
+        if self.left == 0:
+            self.left = self.joined - 1
 
     def leave(self):
         self.left = now_time()
         if self.joined == 0:
             self.joined = now_time() - 1
+        self.total_online = self.total_online + self.left - self.joined
 
     @property
     def actual_name(self):
@@ -47,6 +51,10 @@ class PlayerSeen(Serializable):
     @property
     def target(self) -> int:
         return self.joined if self.online else self.left
+
+    @property
+    def summary(self) -> int:
+        return self.total_online + now_time() - self.joined if self.online else self.total_online
 
     def serialize(self) -> dict:
         ret = super().serialize()
@@ -140,6 +148,13 @@ class SeenStorage:
                 if self.should_list(s, bot, _all):
                     to_sort.append(s)
         return sorted(to_sort, key=lambda y: y.target, reverse=True)
+
+    def online_top(self, bot=False, _all=False):
+        to_sort = []        # type: List[PlayerSeen]
+        for p, s in self.data.items():
+            if self.should_list(s, bot, _all):
+                to_sort.append(s)
+        return sorted(to_sort, key=lambda x: x.summary, reverse=True)
 
     @property
     def lower_data(self) -> Dict[str, PlayerSeen]:

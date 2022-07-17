@@ -6,6 +6,8 @@ SEEN_PREFIX = '!!seen'
 SEEN_TOP_PREFIX = '!!seen-top'
 LIVER_TOP_PREFIX = '!!liver-top'
 DEBUG_PREFIX = '!!liver'
+ONLINE_TOP_PREFIX = '!!online-top'
+ONLINE_PREFIX = '!!online'
 
 
 def ensure(folder: str):
@@ -22,7 +24,7 @@ LOG_FILE = os.path.join(DATA_FOLDER, 'player_seens.log')
 SEENS_PATH_OLD = ['seen.json', 'config/seen.json']
 
 # Plugin Metadata
-META = ServerInterface.get_instance().get_plugin_metadata('mcd_seen')
+META = ServerInterface.get_instance().get_plugin_metadata('mcd_seen_plus')
 
 # Debug mode
 DEBUG_MODE = False

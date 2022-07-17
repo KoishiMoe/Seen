@@ -6,10 +6,10 @@ from mcdreforged.api.utils import Serializable
 from mcdreforged.api.rtext import *
 from typing import Callable, Any, List, Union, Optional
 
-from mcd_seen.storage import storage, PlayerSeen
-from mcd_seen.constants import *
-from mcd_seen.config import config
-from mcd_seen.utils import tr, delta_time, formatted_time, bot_name
+from mcd_seen_plus.storage import storage, PlayerSeen
+from mcd_seen_plus.constants import *
+from mcd_seen_plus.config import config
+from mcd_seen_plus.utils import tr, delta_time, formatted_time, bot_name
 
 TOP_OPTIONS = {
         '-bot': 'bot',
@@ -91,10 +91,24 @@ def register_command(server: PluginServerInterface):
             )
         )
 
+    # !!online
+    server.register_command(
+        Literal(ONLINE_PREFIX).on_child_error(CommandError, cmd_error, handled=True).runs(exe(online, True)).then(
+            QuotableText('player').runs(exe(online))
+        )
+    )
+
+    # !!online-top
+    server.register_command(
+        Literal(ONLINE_TOP_PREFIX).on_child_error(CommandError, cmd_error, handled=True).runs(exe(online_top, True)).then(
+            QuotableText('exarg').runs(exe(online_top))
+        )
+    )
+
 
 def show_help(source: CommandSource):
     help_message = tr(
-        'help_msg', SEEN_PREFIX, SEEN_TOP_PREFIX, LIVER_TOP_PREFIX, META.name, str(META.version)
+        'help_msg', SEEN_PREFIX, SEEN_TOP_PREFIX, LIVER_TOP_PREFIX, ONLINE_TOP_PREFIX, ONLINE_PREFIX, META.name, str(META.version)
     ).strip().splitlines()
     help_msg_rtext = ''
     for line in help_message:
@@ -122,6 +136,15 @@ def top(top_players: List[PlayerSeen], prefix: Union[RTextBase, str]):
     return ret
 
 
+# Online Text layout
+def top_online(top_players: List[PlayerSeen], prefix: Union[RTextBase, str]):
+    ret, num = RTextList(prefix), 1
+    for p in top_players:
+        ret.append(f'\n{num}. ', online_format(p))
+        num += 1
+    return ret
+
+
 def seen_format(player: PlayerSeen):
     ret = ''
     # Bot/Player
@@ -135,6 +158,22 @@ def seen_format(player: PlayerSeen):
     ret += formatted_time(delta_time(player.target))
     return RText(ret).h(tr('hover.query_player', player.actual_name)).c(
         RAction.run_command, '{} {}'.format(SEEN_PREFIX, player.actual_name)
+        )
+
+
+def online_format(player: PlayerSeen):
+    ret = ''
+    # Bot/Player
+    ret += '§{}{}§e'.format('5' if player.is_bot else 'd',
+                            tr(f'text.{"bot" if player.is_bot else "player"}').capitalize())
+    # <player_name>
+    ret += f' §e{player.actual_name}§r '
+    # online time summary
+    ret += tr(f'text.{"bot_online" if player.is_bot else "player_online"}')
+    # sec min hrs day
+    ret += formatted_time(player.summary)
+    return RText(ret).h(tr('hover.query_player', player.actual_name)).c(
+        RAction.run_command, '{} {}'.format(ONLINE_PREFIX, player.actual_name)
         )
 
 
@@ -174,14 +213,39 @@ def liver_top(source: CommandSource, exarg: str = None):
     seen_top(source, exarg, liver=True)
 
 
+def online(source: CommandSource, player: str):
+    to_display = []
+    player_online, bot_online = storage.get(player), storage.get(bot_name(player))
+    if player_online is not None:
+        to_display.append(online_format(player_online))
+    if bot_online is not None:
+        to_display.append(online_format(bot_online))
+    if len(to_display) == 0:
+        player_data_not_found(source)
+    source.reply(RText.join('\n', to_display))
+
+
+def online_top(source: CommandSource, exarg: str = None):
+    args = ExtraArguments.parse(exarg)
+    sorted_list = storage.online_top(bot=args.bot, _all=args.get_all)
+    # -merge
+    sorted_list = storage.merge(sorted_list) if args.merge else sorted_list
+    # -full
+    sorted_list = sorted_list if args.full else sorted_list[:config.seen_top_max]
+    # get prefix
+    prefix = tr(f'fmt.online_top{"_full" if args.full else ""}', config.seen_top_max, args.text)
+
+    source.reply(top_online(sorted_list, prefix=prefix))
+
+
 def cmd_error(source: CommandSource):
     source.reply(
         RText(
-            tr('mcd_seen.error.cmd_error'), color=RColor.red
+            tr('mcd_seen_plus.error.cmd_error'), color=RColor.red
         ).c(
             RAction.run_command, SEEN_PREFIX
         ).h(
-            tr('mcd_seen.hover.show_help')
+            tr('mcd_seen_plus.hover.show_help')
         )
     )
 
@@ -189,11 +253,11 @@ def cmd_error(source: CommandSource):
 def player_data_not_found(source: CommandSource):
     source.reply(
         RText(
-            tr('mcd_seen.error.player_data_not_found'), color=RColor.red
+            tr('mcd_seen_plus.error.player_data_not_found'), color=RColor.red
         ).c(
             RAction.run_command, SEEN_PREFIX
         ).h(
-            tr('mcd_seen.hover.show_help')
+            tr('mcd_seen_plus.hover.show_help')
         )
     )
 

@@ -1,11 +1,13 @@
-mcd_seen.help_msg: |
-  ------ MCDR {3} v{4} ------
+mcd_seen_plus.help_msg: |
+  ------ MCDR {5} v{6} ------
   A plugin to query players online and offline time.
   §d【Command Help】§r
   §7{0}§r Show this message.
   §7{0}§r §e<player>§r Query player's on/offline time.
   §7{1}§r Show the rank of offline time
   §7{2}§r Show the rank of online time.
+  §7{3}§r Show the rank of total online time.
+  §7{4}§r §e<player>§r Query player's total online time.
   §d【Additional Arguments】§r
   You can add more arguments when showing the ranks.
   The data will not include bot if no more arguments given.
@@ -18,28 +20,32 @@ mcd_seen.help_msg: |
   §e-full§r Can only be used on offline rank, Show all the data instead of top 10, §ebut may show too much message sometimes.
 
 # Plain text
-mcd_seen.text.reg_help_msg: View laziness & hardworking rank
-mcd_seen.text.player: player
-mcd_seen.text.bot: bot
-mcd_seen.text.seen: have been offline for
-mcd_seen.text.player_liver: have been online for
-mcd_seen.text.bot_liver: have been online for
-mcd_seen.text.top_normal: §dplayer only§r
-mcd_seen.text.top_bot: §5bot only§r
-mcd_seen.text.top_merge: §7all players§r/§emerged§r
-mcd_seen.text.top_all: §7all players§r
+mcd_seen_plus.text.reg_help_msg: View laziness & hardworking rank
+mcd_seen_plus.text.player: player
+mcd_seen_plus.text.bot: bot
+mcd_seen_plus.text.seen: have been offline for
+mcd_seen_plus.text.player_liver: have been online for
+mcd_seen_plus.text.bot_liver: have been online for
+mcd_seen_plus.text.bot_online: have been online for a total of
+mcd_seen_plus.text.player_online: have been online for a total of
+mcd_seen_plus.text.top_normal: §dplayer only§r
+mcd_seen_plus.text.top_bot: §5bot only§r
+mcd_seen_plus.text.top_merge: §7all players§r/§emerged§r
+mcd_seen_plus.text.top_all: §7all players§r
 
 # Hover texts
-mcd_seen.hover.help_msg_suggest: "Click to fill {}"
-mcd_seen.hover.query_player: "Click to query player {}"
-mcd_seen.hover.show_help: "Click to show help"
+mcd_seen_plus.hover.help_msg_suggest: "Click to fill {}"
+mcd_seen_plus.hover.query_player: "Click to query player {}"
+mcd_seen_plus.hover.show_help: "Click to show help"
 
 # Format texts
-mcd_seen.fmt.delta_time: "sec min hrs day"
-mcd_seen.fmt.seen_top: "Here are the {} players §cofflined§r for the longest time({}):"
-mcd_seen.fmt.seen_top_full: "Here are all the players' offline time data({})"
-mcd_seen.fmt.liver_top: "Here are the players §acurrently online§r({}):"
+mcd_seen_plus.fmt.delta_time: "sec min hrs day"
+mcd_seen_plus.fmt.seen_top: "Here are the {} players §cofflined§r for the longest time({}):"
+mcd_seen_plus.fmt.seen_top_full: "Here are all the players' offline time data({})"
+mcd_seen_plus.fmt.liver_top: "Here are the players §acurrently online§r({}):"
+mcd_seen_plus.fmt.online_top: "Here are the top {} players with the longest §ctotal§r online time({}):"
+mcd_seen_plus.fmt.online_top_full: "Here are all the players' total online time data({})"
 
 # Error texts
-mcd_seen.error.player_data_not_found: Player data not found! Click here for help
-mcd_seen.error.cmd_error: Command error! Click here for help
+mcd_seen_plus.error.player_data_not_found: Player data not found! Click here for help
+mcd_seen_plus.error.cmd_error: Command error! Click here for help

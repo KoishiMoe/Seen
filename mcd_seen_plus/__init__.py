@@ -2,11 +2,11 @@ from parse import parse
 from mcdreforged.api.types import Info, PluginServerInterface
 from mcdreforged.api.decorator import new_thread
 
-from mcd_seen.constants import SEEN_PREFIX, META
-from mcd_seen.utils import verify_player_name, bot_name, tr, logger
-from mcd_seen.storage import storage, bot_list
-from mcd_seen.config import config
-from mcd_seen.interface import register_command
+from mcd_seen_plus.constants import SEEN_PREFIX, META
+from mcd_seen_plus.utils import verify_player_name, bot_name, tr, logger
+from mcd_seen_plus.storage import storage, bot_list
+from mcd_seen_plus.config import config
+from mcd_seen_plus.interface import register_command
 
 
 def on_info(server: PluginServerInterface, info: Info) -> None:
@@ -35,7 +35,7 @@ def warn_first_load():
 
 
 def on_load(server: PluginServerInterface, prev_module):
-    server.register_help_message(SEEN_PREFIX, tr('mcd_seen.text.reg_help_msg'))
+    server.register_help_message(SEEN_PREFIX, tr('mcd_seen_plus.text.reg_help_msg'))
     register_command(server)
     if prev_module is not None:
         try:

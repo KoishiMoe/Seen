@@ -1,1 +1,1 @@
-a plugin for MCDR v2.0
+Online and offline time statics.

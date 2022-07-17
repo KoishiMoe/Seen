@@ -1,6 +1,6 @@
 import json
 
-from mcd_seen.constants import CONFIG_FILE
+from mcd_seen_plus.constants import CONFIG_FILE
 
 from mcdreforged.api.utils import Serializable
 from mcdreforged.api.types import ServerInterface

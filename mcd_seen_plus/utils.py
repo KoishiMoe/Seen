@@ -8,8 +8,8 @@ from typing import Optional
 from mcdreforged.api.types import MCDReforgedLogger, PluginServerInterface
 from mcdreforged.api.rtext import *
 
-from mcd_seen.constants import LOG_FILE, META, DEBUG_MODE
-from mcd_seen.config import config
+from mcd_seen_plus.constants import LOG_FILE, META, DEBUG_MODE
+from mcd_seen_plus.config import config
 
 
 class SeenLogger(MCDReforgedLogger):
@@ -75,7 +75,7 @@ def tr(key: str, *fmt, lang: str = None):
 def formatted_time(t: int or str):
     t = int(t)
     values = []
-    units = tr("mcd_seen.fmt.delta_time").split(' ')
+    units = tr("mcd_seen_plus.fmt.delta_time").split(' ')
     scales = [60, 60, 24]
     for scale in scales:
         value = t % scale
